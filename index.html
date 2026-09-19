@@ -13,7 +13,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
     <style>
-        * { font-family: 'Plus Jakarta Sans', sans-serif; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        * { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            box-sizing: border-box; 
+            -webkit-font-smoothing: antialiased; 
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
         
         .long-press-row, .long-press-keuangan { position: relative; user-select: none; -webkit-user-select: none; }
         .long-press-row::after, .long-press-keuangan::after {
@@ -129,13 +135,14 @@
             z-index: 40;
         }
 
-        /* --- STYLES KHUSUS EXPORT & CETAK PDF UHD --- */
+        /* --- STYLES KHUSUS EXPORT & CETAK PDF VEKTOR TAJAM UHD --- */
         @media print, .pdf-export-active {
             #snow-container,
             #controls-peserta,
             #controls-absensi,
             .no-print,
             .nav-tabs-container,
+            button,
             #footer-mbs,
             #pin-modal,
             #modalPdf,
@@ -159,17 +166,26 @@
             }
 
             #main-web-content {
-                width: 794px !important; /* Lebar standar A4 pada 96 DPI untuk cegah potong */
-                max-width: 100% !important;
+                width: 794px !important; /* Standar Lebar A4 Portrait (96 DPI) */
+                max-width: 794px !important;
                 box-shadow: none !important;
-                padding: 8px !important;
+                padding: 10px !important;
                 margin: 0 auto !important;
                 background: #ffffff !important;
                 overflow: visible !important;
             }
 
+            /* Mencegah gambar banner atas terpotong */
+            .header-banner-container {
+                background-size: 100% 100% !important;
+                background-position: center !important;
+                min-height: 150px !important;
+            }
+
+            /* Memastikan baris tabel tidak pernah terbelah di tengah halaman */
             table {
                 width: 100% !important;
+                border-collapse: collapse !important;
                 page-break-inside: auto;
             }
 
@@ -196,8 +212,8 @@
 
     <div id="main-web-content" class="w-full max-w-full mx-auto space-y-1.5 relative z-10 bg-slate-100 p-1">
         
-        <!-- HEADER -->
-        <div class="w-full rounded-lg p-3 sm:p-4 md:py-10 lg:py-14 text-center shadow-sm relative overflow-hidden bg-[length:100%_100%] bg-center bg-no-repeat" style="background-image: url('https://lh3.googleusercontent.com/d/1rfppl0Roxa-m3F8FImsJ0_lhxf4Y7Wvs');">
+        <!-- HEADER BANNER DENGAN PERBAIKAN UKURAN BACKGROUND -->
+        <div class="header-banner-container w-full rounded-lg p-3 sm:p-5 md:py-10 text-center shadow-sm relative overflow-hidden bg-center bg-no-repeat" style="background-image: url('https://lh3.googleusercontent.com/d/1rfppl0Roxa-m3F8FImsJ0_lhxf4Y7Wvs'); background-size: 100% 100%;">
             <div class="relative z-10">
                 <i class="fa-solid fa-snowflake absolute top-0 right-1/3 text-white/20 text-xs md:text-base"></i>
                 <i class="fa-solid fa-asterisk absolute bottom-0 right-6 text-white/30 text-xs md:text-base"></i>
@@ -338,7 +354,6 @@
 
             <!-- VIEW TAB PESERTA -->
             <div id="view-tab-peserta" class="hidden space-y-3">
-                <!-- AKUMULASI KARTU TIAP BUS -->
                 <div class="grid grid-cols-2 gap-1.5">
                     <div class="bg-blue-50 border border-blue-200 p-2 rounded-lg text-center shadow-xs">
                         <p class="text-[8px] sm:text-[9px] font-black text-blue-600 uppercase tracking-wide">AKUMULASI BUS 1 (A)</p>
@@ -350,7 +365,6 @@
                     </div>
                 </div>
 
-                <!-- OPSI PILIHAN BUS PESERTA -->
                 <div class="flex gap-1.5 pt-1 no-print">
                     <button id="btn-peserta-bus-a" onclick="switchPesertaBusView('A')" class="flex-1 py-1.5 rounded-md font-black text-[10px] sm:text-xs uppercase tracking-wider transition flex items-center justify-center gap-1 bg-blue-600 text-white shadow-sm border border-blue-700">
                         <i class="fa-solid fa-bus"></i> BUS 1 (A)
@@ -428,7 +442,6 @@
 
             <!-- VIEW TAB ABSENSI -->
             <div id="view-tab-absensi" class="hidden space-y-3">
-                <!-- OPSI PILIHAN BUS ABSENSI -->
                 <div class="flex gap-1.5 pt-1 no-print">
                     <button id="btn-absensi-bus-a" onclick="switchAbsensiBusView('A')" class="flex-1 py-1.5 rounded-md font-black text-[10px] sm:text-xs uppercase tracking-wider transition flex items-center justify-center gap-1 bg-blue-600 text-white shadow-sm border border-blue-700">
                         <i class="fa-solid fa-bus"></i> BUS 1 (A)
@@ -527,7 +540,6 @@
 
             <!-- VIEW TAB KEUANGAN -->
             <div id="view-tab-keuangan" class="hidden space-y-4">
-                
                 <div class="bg-[#2563eb] text-white text-center py-6 md:py-8 rounded-xl shadow-md relative overflow-hidden">
                     <div class="absolute inset-0 flex justify-between items-center px-6 md:px-12 pointer-events-none opacity-20">
                         <i class="fa-solid fa-wallet text-6xl md:text-8xl"></i>
@@ -1004,16 +1016,16 @@
             <div class="p-4 space-y-3">
                 <div class="bg-emerald-50 border border-emerald-200 p-2.5 rounded-lg text-left text-[10px] text-emerald-900">
                     <p class="font-bold uppercase flex items-center gap-1 mb-0.5">
-                        <i class="fa-solid fa-circle-check text-emerald-600"></i> Mode Vektor & Presisi Tinggi:
+                        <i class="fa-solid fa-circle-check text-emerald-600"></i> Opsi Hasil Terbaik & Vektor Tajam:
                     </p>
-                    <p id="pdf-modal-desc" class="text-slate-600 font-semibold">Pilih metode ekspor dokumen tanpa terpotong dan dengan kualitas visual terbaik.</p>
+                    <p id="pdf-modal-desc" class="text-slate-600 font-semibold">Gunakan **Cetak Vektor Native** untuk hasil PDF 100% tajam, tulisan bisa di-copy, dan otomatis tidak terpotong antar halaman.</p>
                 </div>
                 <div class="pt-1 flex flex-col gap-2">
-                    <button onclick="printNativeVector()" class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs rounded-lg shadow-md transition uppercase tracking-wider flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-print"></i> CETAK / PDF VEKTOR NATIVE (PALING TAJAM)
+                    <button onclick="printNativeVector()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs rounded-lg shadow-md transition uppercase tracking-wider flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-print"></i> CETAK / SIMPAN PDF VEKTOR NATIVE (100% TAJAM)
                     </button>
-                    <button id="btnDownloadPdfProcess" onclick="generatePdfUHD()" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-lg shadow-md transition uppercase tracking-wider flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-download"></i> DOWNLOAD FILE PDF UHD
+                    <button id="btnDownloadPdfProcess" onclick="generatePdfUHD()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-lg shadow-md transition uppercase tracking-wider flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-download"></i> DOWNLOAD PDF UHD IMAGE (HIGH DPI)
                     </button>
                     <button onclick="closeModal('modalPdf')" class="w-full py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-[10px] rounded-lg uppercase">
                         Batal
@@ -2476,16 +2488,16 @@
 
             if (currentTab === 'peserta') {
                 title.innerText = "Cetak / Export PDF Data Peserta";
-                desc.innerText = "Mencetak atau menyimpan tabel Data Peserta secara utuh, presisi, dan tajam tanpa terpotong.";
+                desc.innerText = "Gunakan Cetak Vektor Native untuk mencetak atau menyimpan tabel Data Peserta tanpa terpotong dan dengan hasil huruf tajam.";
             } else if (currentTab === 'absensi') {
                 title.innerText = "Cetak / Export PDF Rekap Absensi";
-                desc.innerText = "Mencetak atau menyimpan tabel Rekap Absensi Destinasi 1 - 7 secara utuh dan presisi.";
+                desc.innerText = "Gunakan Cetak Vektor Native untuk hasil absensi utuh, jernih, dan tidak terpotong secara horizontal maupun vertikal.";
             } else if (currentTab === 'roadmaps') {
                 title.innerText = "Cetak / Export PDF Roadmap Ziarah";
                 desc.innerText = "Mencetak atau menyimpan peta roadmap & rute perjalanan ziarah secara utuh.";
             } else if (currentTab === 'keuangan') {
                 title.innerText = "Cetak / Export PDF Laporan Keuangan";
-                desc.innerText = "Mencetak atau menyimpan laporan keuangan pemasukan & pengeluaran secara utuh.";
+                desc.innerText = "Mencetak atau menyimpan laporan keuangan pemasukan & pengeluaran secara utuh dan tanpa terpotong.";
             } else if (currentTab === 'lpj') {
                 title.innerText = "Cetak / Export PDF LPJ Ziarah";
                 desc.innerText = "Mencetak atau menyimpan Laporan Pertanggungjawaban (LPJ) lengkap beserta paraf pengurus.";
@@ -2497,13 +2509,13 @@
             document.getElementById('modalPdf').classList.remove('hidden');
         }
 
-        // METODE 1: CETAK VEKTOR NATIVE BROWSER (100% TAJAM & VEKTOR)
+        // METODE 1: CETAK / SIMPAN PDF VEKTOR NATIVE (100% TAJAM, LOSSLESS & TIDAK TERPOTONG)
         function printNativeVector() {
             closeModal('modalPdf');
             window.print();
         }
 
-        // METODE 2: EXPORT PDF UHD CANVAS BERSIH & TANPA TERPOTONG
+        // METODE 2: EXPORT PDF UHD HIGH RESOLUTION CANVAS (SKALA 4X + 300 DPI ANTI-BURAM)
         function generatePdfUHD() {
             const btn = document.getElementById('btnDownloadPdfProcess');
             const originalBtnHtml = btn ? btn.innerHTML : '';
@@ -2515,6 +2527,12 @@
             closeModal('modalPdf');
 
             const mainContent = document.getElementById('main-web-content');
+            
+            // Mengunci lebar kontainer utama ke rasio A4 standar sebelum capture
+            const originalStyle = mainContent.getAttribute('style') || '';
+            mainContent.style.width = '794px';
+            mainContent.style.maxWidth = '794px';
+            
             document.body.classList.add('pdf-export-active');
 
             const tabTitleMap = {
@@ -2530,30 +2548,34 @@
 
             setTimeout(() => {
                 const opt = {
-                    margin:       [6, 6, 6, 6],
+                    margin:       [6, 5, 6, 5],
                     filename:     fileName,
-                    image:        { type: 'jpeg', quality: 0.98 },
-                    pagebreak:    { mode: ['avoid-all', 'css', 'legacy'], avoid: ['tr', 'table', '.no-break', '.rounded-lg', '.rounded-xl'] },
+                    image:        { type: 'jpeg', quality: 1.0 },
+                    pagebreak:    { mode: ['css', 'legacy'], avoid: ['tr', 'table', '.no-break', '.rounded-lg', '.rounded-xl', '.header-banner-container'] },
                     html2canvas:  { 
-                        scale: 2.5,
+                        scale: 4, // Ditingkatkan ke Skala 4x (Resolusi Super HD / 300+ DPI)
+                        dpi: 300,
+                        letterRendering: true,
                         useCORS: true, 
                         allowTaint: true,
                         logging: false,
                         scrollX: 0,
                         scrollY: 0,
-                        windowWidth: 850
+                        windowWidth: 794
                     },
                     jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true }
                 };
 
                 html2pdf().set(opt).from(mainContent).save().then(() => {
                     document.body.classList.remove('pdf-export-active');
+                    mainContent.setAttribute('style', originalStyle);
                     if (btn) {
                         btn.innerHTML = originalBtnHtml;
                         btn.disabled = false;
                     }
                 }).catch(err => {
                     document.body.classList.remove('pdf-export-active');
+                    mainContent.setAttribute('style', originalStyle);
                     alert("Gagal membuat PDF: " + err);
                     if (btn) {
                         btn.innerHTML = originalBtnHtml;
